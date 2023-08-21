@@ -1,0 +1,7 @@
+{
+	"name": "msaz01-dm01",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "Runtime for the VM running inside LRS Azure network."
+	}
+}

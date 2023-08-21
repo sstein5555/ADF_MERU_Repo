@@ -1,0 +1,66 @@
+{
+	"name": "MSAZ01",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "msaz01_dm01_SQL_Server",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server": "msaz01-sql01",
+				"db": {
+					"value": "@dataset().database",
+					"type": "Expression"
+				},
+				"username": "AzureSQLReadOnlyMW",
+				"pw": "4QcH9zAzure01"
+			}
+		},
+		"parameters": {
+			"schema": {
+				"type": "string"
+			},
+			"table": {
+				"type": "string"
+			},
+			"database": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "AC01_PART",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AC01_DATE",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "AC01_QTY",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "AC01_AVGCOST",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

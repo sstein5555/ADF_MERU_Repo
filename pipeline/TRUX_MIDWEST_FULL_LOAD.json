@@ -1,0 +1,6554 @@
+{
+	"name": "TRUX_MIDWEST_FULL_LOAD",
+	"properties": {
+		"activities": [
+			{
+				"name": "Loop over databases",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Database Lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Database Lookup').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CM04 Copy",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CM04')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CM04_CUST",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_CUST",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_SITE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_SITE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_NAME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_NAME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ANUM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_ANUM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_UNIT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_UNIT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_SPFX",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_SPFX",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ROAD",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ROAD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_NESW",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_NESW",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ADD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ADD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ADD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADD5",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ADD5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CITY",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_CITY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_STAT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_STAT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PZIP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_PZIP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PHON",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_PHON",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FAX",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FAX",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CONT",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_CONT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_BUCD",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_BUCD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_NOT1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_NOT1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PRT1",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_PRT1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_NOT2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_NOT2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PRT2",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_PRT2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MAP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MCOL",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_MCOL",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MROW",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MROW",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MNAM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MNAM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MAD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MAD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MCIT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MCIT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MSTA",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MSTA",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MPZI",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MPZI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MCAR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MCAR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_TXJU",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_TXJU",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_TXE1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_TXE1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_TXE2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_TXE2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_EDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_EDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CRED",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM04_CRED",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_WARN",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM04_WARN",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_AGRE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_AGRE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_LONG",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM04_LONG",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_LATT",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM04_LATT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_SUSREA",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_SUSREA",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_SUSDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_SUSDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CCARDTYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_CCARDTYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CCARDNUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_CCARDNUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CCARDEXP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_CCARDEXP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CURR",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_CURR",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_INVNOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_INVNOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD5",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD6",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD7",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD8",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD9",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_FLD10",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_FLD10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PCLASS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_PCLASS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MAD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_MAD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_PONUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_PONUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_ADTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_XDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_XDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_CONTRACTSIGNED",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_CONTRACTSIGNED",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_INVNOTEEXPIRES",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_INVNOTEEXPIRES",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_EMAIL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_EMAIL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_STIM",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_STIM",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ETIM",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_ETIM",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_SREP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_SREP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_STOREDID",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_STOREDID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_WOCOPIES",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_WOCOPIES",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_COD",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_COD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_LOST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_LOST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_INITIALTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_INITIALTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_RENEWTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_RENEWTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_REINSDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM04_REINSDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ADDVERI",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_ADDVERI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_MAILINGADDVERI",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_MAILINGADDVERI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_LEED",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_LEED",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_DEFPC",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM04_DEFPC",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_INVACTION",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_INVACTION",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_ZONE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM04_ZONE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM04_APPLYCCPROCFEE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM04_APPLYCCPROCFEE",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CM04",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CM04",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CM05 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CM04 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CM05')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CM05_CUST",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_CUST",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_SITE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_SITE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_SERV",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_SERV",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_TYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_SIZE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_SIZE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_COMP",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_COMP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_QTY",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_QTY",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_SDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_SDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WEEK",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_WEEK",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_NOT1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_NOT1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_PRT1",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_PRT1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_NOT2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_NOT2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_PRT2",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_PRT2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_EDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_EDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_ECOD",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_ECOD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_MAXL",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_MAXL",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_CYCL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_CYCL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_W_O",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_W_O",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_BDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_BDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_AVGT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_AVGT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_COWN",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_COWN",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD5",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD6",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD7",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD8",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD9",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FLD10",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FLD10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_UOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_PONUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_PONUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DRIVERNOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_DRIVERNOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DRIVERNOTESTART",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_DRIVERNOTESTART",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DRIVERNOTEEXPIRES",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_DRIVERNOTEEXPIRES",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_AGRE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_AGRE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_ADTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_ADTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_XDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_XDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_CONTRACTSIGNED",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_CONTRACTSIGNED",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_BILLTODT",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_BILLTODT",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_POREQ",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM05_POREQ",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_LATT",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_LATT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_LONG",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_LONG",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DEMDAYS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_DEMDAYS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DEMRATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_DEMRATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_GDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_GDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DEMDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_DEMDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_DEMDATEO",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_DEMDATEO",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_REINSDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_REINSDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_LOST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_LOST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_INITIALTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_INITIALTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_RENEWTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_RENEWTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_CTG",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_CTG",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_FAC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_FAC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_MATL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_MATL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_ESTT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_ESTT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_EFFD",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_EFFD",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WDFREQ",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_WDFREQ",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WDACTV",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM05_WDACTV",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WDLIFTS",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM05_WDLIFTS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WDRNUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM05_WDRNUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM05_WDLASTDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM05_WDLASTDATE",
+												"type": "DateTime"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CM05",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CM05",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CM03 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CM05 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CM03')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CM03_CUST",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_CUST",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_NAME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_NAME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CUSTTYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CUSTTYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_ADD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_ADD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_ADD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CITY",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CITY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_STAT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_STAT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_PZIP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_PZIP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_PHON",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_PHON",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FAX",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FAX",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CONT",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_CONT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_SREP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_SREP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_AGRE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_AGRE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_ADTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_XDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_XDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ALPH",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_ALPH",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ICHG",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_ICHG",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_CDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CRED",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM03_CRED",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_WARN",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CM03_WARN",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CARR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CARR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_TXJU",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_TXJU",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_SUSREA",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_SUSREA",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_SUSDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_SUSDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CCARDTYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CCARDTYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CCARDNUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CCARDNUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CCARDEXP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_CCARDEXP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CURR",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_CURR",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD5",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD6",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD7",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD8",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD10",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_OLDCUST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_OLDCUST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_ADD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_FLD9",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_FLD9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_PCLASS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_PCLASS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_PONUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_PONUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CONTRACTSIGNED",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_CONTRACTSIGNED",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_INVNOTEEXPIRES",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_INVNOTEEXPIRES",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_BILLTO",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_BILLTO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_EMAIL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_EMAIL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_COD",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_COD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_BROKE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_BROKE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_STOREDID",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_STOREDID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_SURCHARGEEXEMPTION",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_SURCHARGEEXEMPTION",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_LOST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_LOST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_EREA",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_EREA",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_INVNOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_INVNOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_REINSDATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CM03_REINSDATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_INVACTION",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_INVACTION",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_SCALENOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_SCALENOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ODUL",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_ODUL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_DEFPC",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_DEFPC",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_NATIONAL",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_NATIONAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_INITIALTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_INITIALTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_RENEWTERM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CM03_RENEWTERM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_CASHACCT",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_CASHACCT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_COLLAGNT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_COLLAGNT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_GLOB",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_GLOB",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_ADDVERI",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_ADDVERI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_GENCASHACCT",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_GENCASHACCT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_BILG",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CM03_BILG",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CM03_APPLYCCPROCFEE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CM03_APPLYCCPROCFEE",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CM03",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CM03",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "RM01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CM03 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.RM01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "RM01_NUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_NUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_TYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_TRUK",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_TRUK",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_DRIV",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_DRIV",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_HELP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_HELP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_NOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_NOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "RM01_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_SLID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_SLID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_CALLTIME",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM01_CALLTIME",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_SHADOW",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "RM01_SHADOW",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_NB",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "RM01_NB",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_FAC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_FAC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_MATL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_MATL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_STARTTIME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM01_STARTTIME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM01_DURATION",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM01_DURATION",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "RM01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "RM01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "RM02 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "RM01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.RM02')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "RM02_NUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM02_NUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_SEQU",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM02_SEQU",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_CUST",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM02_CUST",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_SITE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM02_SITE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_SERV",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM02_SERV",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_QTY",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM02_QTY",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_ACTV",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM02_ACTV",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM02_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM02_ID",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "RM02",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "RM02",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CD11 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "RM02 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CD11')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CD11_CODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD11_CODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD11_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD11_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD11_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD11_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD11_CASH",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CD11_CASH",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CD11",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CD11",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CD14 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CD11 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CD14')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CD14_CODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_CODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD14_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_FUELUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_FUELUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_DISTUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_DISTUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_VOLUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_VOLUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_WEIGHTUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD14_WEIGHTUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_ROUTESHEETID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CD14_ROUTESHEETID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_BLANKRECNUM",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CD14_BLANKRECNUM",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_PRINTCALLS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CD14_PRINTCALLS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_DETAILEDROUTCOMP",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD14_DETAILEDROUTCOMP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_SHOWTIMES",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD14_SHOWTIMES",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD14_CINOUT",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD14_CINOUT",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CD14",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CD14",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CD05 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CD14 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CD05')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CD05_CODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD05_CODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD05_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD05_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD05_UOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_CPCTRATIO",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CD05_CPCTRATIO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_MATL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CD05_MATL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CD05_BINDELIVERY",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CD05_BINDELIVERY",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "CD05",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CD05",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "CI01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CD05 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.CI01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "CI01_UNIT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_UNIT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_TYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_SIZE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CI01_SIZE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_COMP",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CI01_COMP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_MAKE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_MAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_PDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CI01_PDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_COST",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CI01_COST",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_AVBL",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CI01_AVBL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_CODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_CODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_LIFE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CI01_LIFE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_CAST",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CI01_CAST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_LIDS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CI01_LIDS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_LOCK",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CI01_LOCK",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_COLR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_COLR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_UOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_YARD",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_YARD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_STYLE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_STYLE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD1",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD4",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD5",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD6",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD7",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD8",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD9",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_FLD10",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_FLD10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_RFID",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CI01_RFID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_HOURRO",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CI01_HOURRO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_RETIDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "CI01_RETIDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_MI",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "CI01_MI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_TRUK",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "CI01_TRUK",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_LATT",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CI01_LATT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "CI01_LONG",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "CI01_LONG",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "DBO",
+										"table": "CI01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "CI01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "FC01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "CI01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.FC01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "FC01_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "FC01_ID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "FC01_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "FC01_UOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "FC01_DATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "FC01_DATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "FC01_RATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "FC01_RATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "FC01_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "FC01_TYPE",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "FC01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "FC01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "RM17 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "FC01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.RM17')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "RM17_DATE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "RM17_DATE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_DRIVER",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM17_DRIVER",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_CLOCKIN",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "RM17_CLOCKIN",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_CLOCKOUT",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "RM17_CLOCKOUT",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_NOTES",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM17_NOTES",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_ROUT",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM17_ROUT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_SEQ1",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM17_SEQ1",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM17_SEQ2",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM17_SEQ2",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "RM17",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "RM17",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "LM01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "RM17 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.LM01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "LM01_DSTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_DSTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_NAME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_NAME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_STRT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_STRT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_CITY",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_CITY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_STAT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_STAT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_PZIP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_PZIP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_LATT",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_LATT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_LONG",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_LONG",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_NOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_NOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "LM01_ID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ADD2",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_ADD2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ADD3",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_ADD3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_PHON",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_PHON",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_FAX",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_FAX",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_EMAIL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_EMAIL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_CASH",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_CASH",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DISPLAY",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_DISPLAY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_RND",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_RND",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_MINS",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_MINS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DPST",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_DPST",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_TRPT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_TRPT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DRPT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_DRPT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_BRPT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_BRPT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DMAX",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_DMAX",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_STIME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_STIME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_MAXW",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_MAXW",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_MAXA",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_MAXA",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_RUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_RUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_OWN",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_OWN",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_VUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_VUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_CUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_CUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_OBWEIGHT",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_OBWEIGHT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ADT1RPT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_ADT1RPT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ADT2RPT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM01_ADT2RPT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DCASH",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_DCASH",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_2UP",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_2UP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_FBTQ",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_FBTQ",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_RECYCLERY",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_RECYCLERY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_DMAXP",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM01_DMAXP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "lm01_disallowMW",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_DISALLOWMW",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM01_ROUTABLE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM01_ROUTABLE",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "LM01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "LM01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "TR01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "LM01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.TR01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "TR01_NUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_NUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_MAKE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_MAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_MODL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_MODL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_YEAR",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_YEAR",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_OUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_OUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_LICN",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_LICN",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_RDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "TR01_RDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CST1",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "TR01_CST1",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CST2",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "TR01_CST2",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_EMAIL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_EMAIL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PHONE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PHONE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "tr01_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "TR01_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_NOTE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_NOTE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_GPS",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_GPS",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_ODOMRO",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_ODOMRO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_HOURRO",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_HOURRO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_VIN",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_VIN",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "tr01_retidte",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "TR01_RETIDTE",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CAP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_CAP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CAPUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_CAPUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_MI",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "TR01_MI",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_FTYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_FTYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_REACODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_REACODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXNUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXNUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXFRONTCAP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXFRONTCAP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXREARCAP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXREARCAP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXTANDEMTARE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXTANDEMTARE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXTANDEMTAREUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXTANDEMTAREUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_LICWEIGHT",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_LICWEIGHT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_MFRWEIGHT",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_MFRWEIGHT",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_LGLPAYLOAD",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_LGLPAYLOAD",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_ENGMODEL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_ENGMODEL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_ENGHP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_ENGHP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_ENGSERIALNUMB",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_ENGSERIALNUMB",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TRANSMODEL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TRANSMODEL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CHASISMODEL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_CHASISMODEL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_CHASSERIALNUMB",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_CHASSERIALNUMB",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_DTEINSERV",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "TR01_DTEINSERV",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_EQUIPMAKE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_EQUIPMAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_EQUIPYEAR",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_EQUIPYEAR",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXTANDUMSPACING",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXTANDUMSPACING",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXFRONTCAPUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXFRONTCAPUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXREARCAPUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXREARCAPUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_MFRWEIGHTUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_MFRWEIGHTUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_LGLPAYLOADUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_LGLPAYLOADUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_LICWEIGHTUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_LICWEIGHTUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PUMP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PUMP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PTOMake",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PTOMAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PTOModel",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PTOMODEL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXRearRatio",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "TR01_AXREARRATIO",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXThirdCAP",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "TR01_AXTHIRDCAP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXThirdCAPUOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXTHIRDCAPUOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXThirdMake",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXTHIRDMAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_AXThirdModel",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_AXTHIRDMODEL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TRANSSERIAL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TRANSSERIAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PTOSERIAL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PTOSERIAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_PUMPSERIAL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_PUMPSERIAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TARPSERIAL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TARPSERIAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TARPMAKE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TARPMAKE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "TR01_TARPMODEL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "TR01_TARPMODEL",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "TR01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "TR01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "LM03 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "TR01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.LM03')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "LM03_TYPE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM03_TYPE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_SIZE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM03_SIZE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_COMP",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "LM03_COMP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_WTYP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM03_WTYP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_CAP",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM03_CAP",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_MATL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM03_MATL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_PRICE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "LM03_PRICE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "LM03_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "LM03_UOM",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "LM03",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "LM03",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "PC01 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "LM03 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.PC01')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "PC01_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC01_ID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC01_NAME",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC01_NAME",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC01_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "PC01_ACTIVE",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "PC01",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "PC01",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "PC02 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "PC01 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.PC02')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "PC02_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC02_ID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_PCID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC02_PCID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_SERVICE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_SERVICE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_SIZE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC02_SIZE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_COMPACT",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "PC02_COMPACT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_QTY",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC02_QTY",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_BILLCYCLE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_BILLCYCLE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_WEEKCODE",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC02_WEEKCODE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_MAXLIFTS",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC02_MAXLIFTS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_UOM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_UOM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_DEMDAYS",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC02_DEMDAYS",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_DEMRATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC02_DEMRATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_CTG",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_CTG",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_FAC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_FAC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC02_MATL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC02_MATL",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "PC02",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "PC02",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "PC03 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "PC02 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.PC03')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "PC03_PCSID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC03_PCSID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC03_ACTIVITY",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC03_ACTIVITY",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC03_BILLUNIT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC03_BILLUNIT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC03_RATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC03_RATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC03_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC03_ID",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "PC03",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "PC03",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "PC04 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "PC03 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.PC04')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "PC04_PCSID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC04_PCSID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_MATERIAL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC04_MATERIAL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_RATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC04_RATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_UNIT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "PC04_UNIT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_MINQTY",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC04_MINQTY",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_MAXQTY",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "PC04_MAXQTY",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "PC04_ID",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "PC04_ID",
+												"type": "Int64"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "PC04",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "PC04",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "mt00 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "PC04 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.MT00')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "MT00_CODE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "MT00_CODE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_DESC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "MT00_DESC",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_RATE",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "MT00_RATE",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "MT00_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_SURCHRG",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "MT00_SURCHRG",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_ONCE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "MT00_ONCE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "MT00_SERVNUMBREQ",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "MT00_SERVNUMBREQ",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "MT00",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "MT00",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "RM04 Copy",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "mt00 Copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "SnowflakeSink",
+									"preCopyScript": {
+										"value": "@{concat('truncate table',' ',item().Snowflake_Name,'.RM04')}",
+										"type": "Expression"
+									},
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand",
+										"additionalCopyOptions": {
+											"ON_ERROR": "CONTINUE"
+										}
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobLinkedService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"parallelCopies": {
+									"value": "@pipeline().parameters.Degree_Copy_Parallelism",
+									"type": "Expression"
+								},
+								"dataIntegrationUnits": {
+									"value": "@pipeline().parameters.Maximum_DIU",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "RM04_NUMB",
+												"type": "Int32"
+											},
+											"sink": {
+												"name": "RM04_NUMB",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_FNAM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_FNAM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_LNAM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_LNAM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_CST1",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM04_CST1",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_CST2",
+												"type": "Decimal"
+											},
+											"sink": {
+												"name": "RM04_CST2",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_EMAIL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_EMAIL",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_PHONE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_PHONE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_EMPNUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_EMPNUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_ACTIVE",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "RM04_ACTIVE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_MECH",
+												"type": "Boolean"
+											},
+											"sink": {
+												"name": "RM04_MECH",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_PWD",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_PWD",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_TRACKING_PHONE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_TRACKING_PHONE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_LICENSE",
+												"type": "String"
+											},
+											"sink": {
+												"name": "RM04_LICENSE",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "RM04_LICRDTE",
+												"type": "DateTime"
+											},
+											"sink": {
+												"name": "RM04_LICRDTE",
+												"type": "DateTime"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "MSAZ01",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "dbo",
+										"table": "RM04",
+										"database": {
+											"value": "@item().sql_db_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LRS_Snowflake_Raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"Snowflake_Sink_Table": "RM04",
+										"Snowflake_Schema": {
+											"value": "@item().Snowflake_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Database Lookup",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "LRS_Snowflake_Raw",
+						"type": "DatasetReference",
+						"parameters": {
+							"Snowflake_Sink_Table": "DATABASE_LOOKUP_TRUX_MIDWEST",
+							"Snowflake_Schema": "MASTER_DATA"
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"Maximum_DIU": {
+				"type": "int",
+				"defaultValue": 8
+			},
+			"Degree_Copy_Parallelism": {
+				"type": "int",
+				"defaultValue": 8
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-08-21T21:54:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

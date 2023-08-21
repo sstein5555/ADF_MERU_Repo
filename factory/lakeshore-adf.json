@@ -1,0 +1,9 @@
+{
+	"name": "lakeshore-adf",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f8ffea9d-d126-45d4-872f-2efd7410383c",
+		"tenantId": "d0d2d277-fddf-4bca-8282-c6028011a72e"
+	}
+}

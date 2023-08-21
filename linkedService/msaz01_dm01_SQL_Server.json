@@ -1,0 +1,30 @@
+{
+	"name": "msaz01_dm01_SQL_Server",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "SQL server linked service for MSAZ01.",
+		"parameters": {
+			"server": {
+				"type": "string"
+			},
+			"db": {
+				"type": "string"
+			},
+			"username": {
+				"type": "String"
+			},
+			"pw": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Data Source=@{linkedService().server};Initial Catalog=@{linkedService().db};User ID=@{linkedService().username};Password=@{linkedService().pw}"
+		},
+		"connectVia": {
+			"referenceName": "msaz01-dm01",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
