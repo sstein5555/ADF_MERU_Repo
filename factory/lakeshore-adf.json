@@ -1,5 +1,11 @@
 {
 	"name": "lakeshore-adf",
+	"properties": {
+		"globalConfigurations": {
+			"factoryStagingLSReferenceName": "AzureBlobLinkedService",
+			"factoryStagingLSType": "LinkedServiceReference"
+		}
+	},
 	"location": "centralus",
 	"identity": {
 		"type": "SystemAssigned",
