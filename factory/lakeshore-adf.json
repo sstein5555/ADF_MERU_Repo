@@ -4,7 +4,7 @@
 		"globalConfigurations": {
 			"factoryStagingLSReferenceName": "AzureBlobLinkedService",
 			"factoryStagingLSType": "LinkedServiceReference",
-			"PipelineBillingEnabled": "true"
+			"PipelineBillingEnabled": "false"
 		}
 	},
 	"location": "centralus",
