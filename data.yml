@@ -1,11 +1,93 @@
-defaultStorageMapping: WORK
-jobs: {}
+defaultStorageMapping: TRUXCOMBINED_RAW
+jobs:
+  Job-1:
+    excludeSelector: ""
+    id: 1
+    includeSelector: "{ location: TRUXCOMBINED_RAW name:*COMBINED } OR {l"
+    name: New Job
+    steps: []
+    subgraphs: []
 locations:
+  FINANCIAL_DATA_MODEL:
+    mappingDefinitions:
+      "2":
+        database: LRS_PRODUCTION
+        schema: FINANCIAL_DATA_MODEL
   MASTER_DATA:
     mappingDefinitions:
       "2":
         database: LRS_RAW
         schema: MASTER_DATA
+  MASTER_DATA_CLEAN:
+    mappingDefinitions:
+      "2":
+        database: LRS_PRODUCTION
+        schema: MASTER_DATA_CLEAN
+  SAGE_COMBINED:
+    mappingDefinitions:
+      "2":
+        database: LRS_PRODUCTION
+        schema: SAGE_COMBINED_RAW
+  SG_BLDDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_BLDDAT_DBO
+  SG_ECODAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_ECODAT_DBO
+  SG_HRTDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_HRTDAT_DBO
+  SG_LAKDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LAKDAT_DBO
+  SG_LAKPDA:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LAKPDA_DBO
+  SG_LAKSDA:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LAKSDA_DBO
+  SG_LIADAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LIADAT_DBO
+  SG_LINDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LINDAT_DBO
+  SG_LRSDCT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_LRSDCT_DBO
+  SG_MANDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_MANDAT_DBO
+  SG_RAMDAT:
+    mappingDefinitions:
+      "2":
+        database: LRS_RAW
+        schema: SG_RAMDAT_DBO
+  TRUXCOMBINED_RAW:
+    mappingDefinitions:
+      "2":
+        database: LRS_PRODUCTION
+        schema: TRUX_COMBINED_RAW
   TRUX_AL_COMP_RAW:
     mappingDefinitions:
       "2":
@@ -186,11 +268,6 @@ locations:
       "2":
         database: LRS_RAW
         schema: TRUX_XI_COMP_RAW
-  WORK:
-    mappingDefinitions:
-      "2":
-        database: LRS_PRODUCTION
-        schema: INFORMATION_SCHEMA
 macros: {}
 packages: {}
 projects: {}
@@ -364,6 +441,670 @@ stepTypes:
                 {% endif %}
             {% endfor %}
     name: Multi Source Loop
+    version: 1
+  StepType-5:
+    id: "5"
+    isDisabled: false
+    metadata:
+      defaultStorageLocation: null
+      error: null
+      nodeMetadataSpec: |
+        capitalized: Node Profiler
+        short: PROF
+        tagColor: blue
+        plural: Node Profilers
+
+
+
+        config:
+        - groupName: Sampling Options
+          items:
+          - displayName: Sample Mode
+            attributeName: sampleMode
+            type: dropdownSelector
+            default: Sample
+            options:
+              - Sample
+              - Full Table
+           
+            isRequired: false
+          
+          - displayName: Percent or Fixed Number of Rows
+            attributeName: sampleOption
+            type: dropdownSelector
+            default: Fixed Row
+            options:
+              - Fixed Row
+              - Percentage
+            isRequired: false
+            enableIf: "{% if config.sampleMode == 'Sample' %} true {% else %} false {% endif %}"
+
+
+          - displayName: Number of Rows
+            attributeName: sampleRows
+            type: textBox
+            default: '1000'
+            isRequired: false
+            enableIf: "{% if config.sampleMode == 'Sample' and config.sampleOption == 'Fixed Row' %} true {% else %} false {% endif %}"
+          
+          - displayName: Percentage
+            attributeName: samplePercent
+            type: textBox
+            default: '10'
+            isRequired: false
+            enableIf: "{% if config.sampleMode == 'Sample' and config.sampleOption == 'Percentage' %} true {% else %} false {% endif %}"
+
+        - groupName: Distinct and Null
+          items:
+          - displayName: Distict Count
+            attributeName: isDistinctCount
+            type: columnSelector
+            isRequired: false
+          
+          - displayName: Null Count
+            attributeName: isNullCount
+            type: columnSelector
+            isRequired: false
+
+        - groupName: Min / Max / Avg
+          items:
+          - displayName: MAX Value
+            attributeName: isMaxMetric
+            type: columnSelector
+            isRequired: false
+
+          - displayName: MIN Value
+            attributeName: isMinMetric
+            type: columnSelector
+            isRequired: false
+          - displayName: Average Value
+            attributeName: isAvgMetric
+            type: columnSelector
+            isRequired: false
+
+
+        systemColumns:
+
+        - displayName: PROFILE_METRIC
+          transform: "NULL"
+          dataType: VARCHAR
+          placement: beginning
+          attributeName: isSystemUpdateDate
+
+        - displayName: SYSTEM_CREATE_DATE
+          transform: CAST(CURRENT_TIMESTAMP AS TIMESTAMP)
+          dataType: TIMESTAMP
+          placement: beginning
+          attributeName: isSystemCreateDate
+      templates:
+        create:
+          templateString: |
+            {% if node.materializationType == 'table' %}
+                {{ stage('Create Profile Node Table') }}
+
+                CREATE OR REPLACE TABLE {{ ref_no_link(node.location.name, node.name) }}
+                (
+                    {% for col in columns %}
+                        "{{ col.name }}" VARCHAR 
+                        {%- if col.description | length > 0 %} COMMENT '{{ col.description }}'{% endif %}
+                        {%- if not loop.last -%}, {% endif %}
+                    {% endfor %}
+                )
+                {%- if node.description | length > 0 %} COMMENT = '{{ node.description }}'{% endif %}
+
+            {% endif %}
+        run:
+          templateString: |
+            {% if columns | selectattr('isDistinctCount')| list | length > 0 %}
+                {{ stage('Profile Distinct') }}
+                
+                    MERGE INTO {{ ref_no_link(node.location.name, node.name) }} "TGT"
+                    USING (
+                        SELECT
+                        'DISTINCT' as "PROFILE_METRIC",
+                        {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            {% if col.isDistinctCount %}
+                                COUNT(DISTINCT "{{ col.name }}" )
+                            {% else %}
+                                {% if col.transform | trim != '' %}{{ col.transform }}{% else %}NULL{% endif %}
+                            {% endif %}
+                            AS "{{ col.name }}"
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+
+                        {{ sources[0].join }} 
+                        {% if config.sampleMode == 'Sample' %} 
+                            sample (
+                            {% if config.sampleOption == 'Percentage' %} 
+                                {{ config.samplePercent }}
+                            {% else %}
+                                {{ config.sampleRows }} rows 
+                            {% endif %}
+                            )
+                        {% endif %}
+                        )
+                        AS "SRC"
+                    ON {% for col in sources[0].columns if col.isSystemUpdateDate or col.isSystemCreateDate -%}
+                            {% if not loop.first %}
+                                AND
+                            {% endif %}
+                            "SRC"."{{ col.name }}" = "TGT"."{{ col.name }}"
+                        {% endfor %}
+                    WHEN MATCHED
+                    THEN UPDATE SET
+                    {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            "TGT"."{{ col.name }}" = "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    WHEN NOT MATCHED THEN
+                    INSERT (
+                    {%- for col in columns %}
+                        "{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+                    VALUES (
+                    {%- for col in columns %}
+                        "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+
+            {% endif %}
+
+
+            {% if columns | selectattr('isNullCount')| list | length > 0 %}
+                {{ stage('Profile Null Values') }}
+                
+                    MERGE INTO {{ ref_no_link(node.location.name, node.name) }} "TGT"
+                    USING (
+                        SELECT
+                        'Null Count' as "PROFILE_METRIC",
+                        {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            {% if col.isNullCount %}
+                                SUM(CASE WHEN "{{ col.name }}" is NULL THEN 1 ELSE 0 END     )
+                            {% else %}
+                                {% if col.transform | trim != '' %}{{ col.transform }}{% else %}NULL{% endif %}
+                            {% endif %}
+                            AS "{{ col.name }}"
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+
+                        {{ sources[0].join }} 
+                        {% if config.sampleMode == 'Sample' %} 
+                            sample (
+                            {% if config.sampleOption == 'Percentage' %} 
+                                {{ config.samplePercent }}
+                            {% else %}
+                                {{ config.sampleRows }} rows 
+                            {% endif %}
+                            )
+                        {% endif %}
+                    ) AS "SRC"
+                     ON {% for col in sources[0].columns if col.isSystemUpdateDate or col.isSystemCreateDate -%}
+                            {% if not loop.first %}
+                                AND
+                            {% endif %}
+                            "SRC"."{{ col.name }}" = "TGT"."{{ col.name }}"
+                        {% endfor %}
+                    WHEN MATCHED
+                    THEN UPDATE SET
+                    {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            "TGT"."{{ col.name }}" = "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    WHEN NOT MATCHED THEN
+                    INSERT (
+                    {%- for col in columns %}
+                        "{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+                    VALUES (
+                    {%- for col in columns %}
+                        "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+
+            {% endif %}
+
+
+            {% if columns | selectattr('isMaxMetric')| list | length > 0 %}
+                {{ stage('Profile Max') }}
+                
+                    MERGE INTO {{ ref_no_link(node.location.name, node.name) }} "TGT"
+                    USING (
+                        SELECT DISTINCT
+                        'MAX' as "PROFILE_METRIC",
+                        {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            {% if col.isMaxMetric %}
+                               (SELECT MAX("{{col.name}}") 
+                                {{ sources[0].join }} 
+                                {% if config.sampleMode == 'Sample' %} 
+                                    sample (
+                                    {% if config.sampleOption == 'Percentage' %} 
+                                        {{ config.samplePercent }}
+                                    {% else %}
+                                        {{ config.sampleRows }} rows 
+                                    {% endif %}
+                                    )
+                                {% endif %} ) 
+                            {% else %}
+                                {% if col.transform | trim != '' %}{{ col.transform }}{% else %}NULL{% endif %}
+                            {% endif %}
+                            AS "{{ col.name }}"
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+
+                        {{ sources[0].join }} 
+                        {% if config.sampleMode == 'Sample' %} 
+                            sample (
+                            {% if config.sampleOption == 'Percentage' %} 
+                                {{ config.samplePercent }}
+                            {% else %}
+                                {{ config.sampleRows }} rows 
+                            {% endif %}
+                            )
+                        {% endif %} )
+                        AS "SRC"
+                    ON {% for col in sources[0].columns if col.isSystemUpdateDate or col.isSystemCreateDate -%}
+                            {% if not loop.first %}
+                                AND
+                            {% endif %}
+                            "SRC"."{{ col.name }}" = "TGT"."{{ col.name }}"
+                        {% endfor %}
+                    WHEN MATCHED
+                    THEN UPDATE SET
+                    {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            "TGT"."{{ col.name }}" = "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    WHEN NOT MATCHED THEN
+                    INSERT (
+                    {%- for col in columns %}
+                        "{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+                    VALUES (
+                    {%- for col in columns %}
+                        "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+
+            {% endif %}
+
+            {% if columns | selectattr('isMinMetric')| list | length > 0 %}
+                {{ stage('Profile Min') }}
+                
+                    MERGE INTO {{ ref_no_link(node.location.name, node.name) }} "TGT"
+                    USING (
+                        SELECT DISTINCT
+                        'MIN' as "PROFILE_METRIC",
+                        {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            {% if col.isMinMetric %}
+                               (SELECT MIN("{{col.name}}") 
+                               {{ sources[0].join }} 
+                                {% if config.sampleMode == 'Sample' %} 
+                                    sample (
+                                    {% if config.sampleOption == 'Percentage' %} 
+                                        {{ config.samplePercent }}
+                                    {% else %}
+                                        {{ config.sampleRows }} rows 
+                                    {% endif %}
+                                    )
+                                {% endif %} ) 
+                            {% else %}
+                                {% if col.transform | trim != '' %}{{ col.transform }}{% else %}NULL{% endif %}
+                            {% endif %}
+                            AS "{{ col.name }}"
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+
+                        {{ sources[0].join }} 
+                        {% if config.sampleMode == 'Sample' %} 
+                            sample (
+                            {% if config.sampleOption == 'Percentage' %} 
+                                {{ config.samplePercent }}
+                            {% else %}
+                                {{ config.sampleRows }} rows 
+                            {% endif %}
+                            )
+                        {% endif %} )
+                        AS "SRC"
+                    ON {% for col in sources[0].columns if col.isSystemUpdateDate or col.isSystemCreateDate -%}
+                            {% if not loop.first %}
+                                AND
+                            {% endif %}
+                            "SRC"."{{ col.name }}" = "TGT"."{{ col.name }}"
+                        {% endfor %}
+                    WHEN MATCHED
+                    THEN UPDATE SET
+                    {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            "TGT"."{{ col.name }}" = "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    WHEN NOT MATCHED THEN
+                    INSERT (
+                    {%- for col in columns %}
+                        "{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+                    VALUES (
+                    {%- for col in columns %}
+                        "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+
+            {% endif %}
+
+            {% if columns | selectattr('isAvgMetric')| list | length > 0 %}
+                {{ stage('Profile Average') }}
+                
+                    MERGE INTO {{ ref_no_link(node.location.name, node.name) }} "TGT"
+                    USING (
+                        SELECT DISTINCT
+                        'AVG' as "PROFILE_METRIC",
+                        {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            {% if col.isAvgMetric %}
+                               (SELECT AVG("{{col.name}}") 
+                               {{ sources[0].join }} 
+                                {% if config.sampleMode == 'Sample' %} 
+                                    sample (
+                                    {% if config.sampleOption == 'Percentage' %} 
+                                        {{ config.samplePercent }}
+                                    {% else %}
+                                        {{ config.sampleRows }} rows 
+                                    {% endif %}
+                                    )
+                                {% endif %} ) 
+                            {% else %}
+                                {% if col.transform | trim != '' %}{{ col.transform }}{% else %}NULL{% endif %}
+                            {% endif %}
+                            AS "{{ col.name }}"
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+
+                        {{ sources[0].join }} 
+                        {% if config.sampleMode == 'Sample' %} 
+                            sample (
+                            {% if config.sampleOption == 'Percentage' %} 
+                                {{ config.samplePercent }}
+                            {% else %}
+                                {{ config.sampleRows }} rows 
+                            {% endif %}
+                            )
+                        {% endif %} )
+                        AS "SRC"
+                     ON {% for col in sources[0].columns if col.isSystemUpdateDate or col.isSystemCreateDate -%}
+                            {% if not loop.first %}
+                                AND
+                            {% endif %}
+                            "SRC"."{{ col.name }}" = "TGT"."{{ col.name }}"
+                        {% endfor %}
+                    WHEN MATCHED
+                    THEN UPDATE SET
+                    {%- for col in sources[0].columns if not col.isSystemUpdateDate %}
+                            "TGT"."{{ col.name }}" = "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    WHEN NOT MATCHED THEN
+                    INSERT (
+                    {%- for col in columns %}
+                        "{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+                    VALUES (
+                    {%- for col in columns %}
+                        "SRC"."{{ col.name }}"
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor -%}
+                    )
+
+            {% endif %}
+    name: Node Profiler
+    version: 1
+  StepType-6:
+    id: "6"
+    isDisabled: false
+    metadata:
+      defaultStorageLocation: null
+      error: null
+      nodeMetadataSpec: |-
+        capitalized: CDC Table
+        short: "CDC"
+        tagColor: "#ff33cc"
+        plural: CDC Tables
+
+        config:
+        - groupName: Stream
+          items:
+          - displayName: Description
+            attributename: description
+            type: textBox
+            isRequired: false
+            default: "A CDC table consists of a few components:\n
+              1. A stream on the source node\n
+              2. The CDC table which contains a persistent replica of recent CDC records\n
+              3. A sequence to keep track of streams\n
+              4. Optional: a Task to replicate records from the Stream into the CDC table\n
+              "
+
+        - groupName: Task
+          items:
+
+          - displayName: Create Task
+            enableIf: "{{config.cdcTableEnabled}}"
+            attributeName: taskEnabled
+            type: toggleButton
+            default: false
+            isRequired: false
+
+          - displayName: Task Schedule
+            enableIf: "{{config.taskEnabled}}"
+            attributeName: taskSchedule
+            type: dropdownSelector
+            default: "Every 30 minutes"
+            options:
+            - "Every minute"
+            - "Every 5 minutes"
+            - "Every 30 minutes"
+            - "Every hour"
+            - "Every day"
+            isRequired: false
+
+          - displayName: Warehouse
+            enableIf: "{{config.taskEnabled}}"
+            attributeName: taskWarehouse
+            type: dropdownSelector
+            default: "EMEA_TRANSFORM_XS_WH"
+            options:
+            - "EMEA_TRANSFORM_XS_WH"
+            - "EMEA_TRANSFORM_S_WH"
+            - "EMEA_TRANSFORM_M_WH"
+            - "EMEA_TRANSFORM_L_WH"
+            - "COMPUTE_WH"
+            isRequired: false
+
+          - displayName: Custom Task Name
+            enableIf: "{{config.taskEnabled}}"
+            attributeName: taskCustomName
+            type: textBox
+            isRequired: false
+
+        - groupName: Hidden config
+          enableIf: "false"
+          items:
+          - displayName: Type
+            type: materializationSelector
+            default: table
+            options:
+            - table
+            isRequired: false
+
+        systemColumns:
+        - displayName: "METADATA$ACTION"
+          transform: "METADATA$ACTION"
+          dataType: STRING
+          placement: end
+          attributeName: isStreamMetadataAction
+          description: Indicates the DML operation (INSERT, DELETE) recorded.
+        - displayName: "METADATA$ISUPDATE"
+          transform: "METADATA$ISUPDATE"
+          dataType: STRING
+          placement: end
+          attributeName: isStreamMetadataIsUpdate
+          description: Indicates whether the operation was part of an UPDATE statement.
+        - displayName: "METADATA$ROW_ID"
+          transform: "METADATA$ROW_ID"
+          dataType: STRING
+          placement: end
+          attributeName: isStreamMetadataRowId
+          description: Specifies the unique and immutable ID for the row, which can be used to track changes to specific rows over time.
+        - displayName: "CDC_ID"
+          transform: ""
+          dataType: INTEGER
+          placement: end
+          attributeName: isStreamMetadataCDCId
+          description: specific CDC identifier based on a sequence.
+        - displayName: "CDC_TIMESTAMP"
+          transform: CAST(CURRENT_TIMESTAMP AS TIMESTAMP)
+          dataType: TIMESTAMP
+          placement: end
+          attributeName: isSystemCreateDate
+          description: specific attribute containing the timestamp of storing the CDC record.
+      templates:
+        create:
+          templateString: |-
+            {{ stage('Create Stream') }}
+
+            CREATE OR REPLACE STREAM {{ ref_no_link(node.location.name, "STR_" + node.name) }}
+            ON TABLE {{ ref(sources[0].dependencies[0].node.location.name, sources[0].dependencies[0].node.name) }}
+            APPEND_ONLY = FALSE
+            COMMENT = 'CDC Stream on {{ ref(node.location.name, sources[0].dependencies[0].node.name) }}'
+
+            {{ stage('Create Sequence') }}
+
+            CREATE OR REPLACE SEQUENCE {{ ref_no_link(node.location.name, "SEQ_" + node.name) }}
+
+            {{ stage('Create CDC Table') }}
+
+            CREATE OR REPLACE TABLE {{ ref_no_link(node.location.name, node.name) }}
+            (
+                {% for col in columns %}
+                    "{{ col.name }}" {{ col.dataType }}
+                    {%- if not col.nullable %} NOT NULL
+                        {%- if col.defaultValue | length > 0 %} DEFAULT {{ col.defaultValue }}{% endif %}
+                    {% endif %}
+                    {%- if col.description | length > 0 %} COMMENT '{{ col.description }}'{% endif %}
+                    {%- if not loop.last -%}, {% endif %}
+                {% endfor %}
+            )
+            {%- if node.description | length > 0 %} COMMENT = '{{ node.description }}'{% endif %}
+
+            {% if config.taskEnabled is true %}
+
+                {{ stage('Create Task') }}
+
+                CREATE OR REPLACE TASK 
+                {% if config.taskCustomName != '' %}
+                    {{ ref_no_link(node.location.name, config.taskCustomName) }}
+                {% else %}
+                    {{ ref_no_link(node.location.name, "TSK_" + node.name) }}
+                {% endif %}
+                WAREHOUSE = {{config.taskWarehouse}}
+             
+                SCHEDULE = 
+                {% if config.taskSchedule == 'Every minute' %}
+                    '1 MINUTE'
+                {% elif config.taskSchedule == 'Every 5 minutes' %}
+                    '5 MINUTE'
+                {% elif config.taskSchedule == 'Every 30 minutes' %}
+                    '30 MINUTE'
+                {% elif config.taskSchedule == 'Every hour' %}
+                    '60 MINUTE'
+                {% elif config.taskSchedule == 'Every day' %}
+                    '3600 MINUTE'
+                {% else %}
+                    'INVALID'
+                {% endif %}
+                COMMENT='Task to copy data of stream STR_{{node.name}} to CDC Table {{node.name}}'
+                WHEN SYSTEM$STREAM_HAS_DATA('{{ ref_no_link(node.location.name, "STR_" + node.name) }}')
+                AS
+                INSERT INTO {{ ref_no_link(node.location.name, node.name) }}
+
+                {% for source in sources %}
+                    SELECT
+                    {% for col in source.columns %}
+                        {% if col.name == 'CDC_ID' %}
+                            SEQ_{{node.name}}.NEXTVAL
+                        {% elif col.transform | trim != '' %}
+                            {{ col.transform.replace(source.dependencies[0].node.name, 'STR_' + node.name) }}
+                        {% elif col.sourceColumns[0].column and col.sourceColumns[0].column.name %}
+                            "STR_{{ node.name }}"."{{ col.sourceColumns[0].column.name }}"
+                        {% else %}
+                            NULL
+                        {% endif %}
+                        AS "{{ col.name }}"
+                        {%- if not loop.last -%}, {% endif %}
+                    {% endfor %}
+
+                    FROM {{ ref_no_link(node.location.name, "STR_" + node.name) }}
+
+                    {% if config.insertStrategy in ['UNION', 'UNION ALL'] and not loop.last %}
+                        {{config.insertStrategy}}
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+        run:
+          templateString: |-
+            {% if config.taskEnabled is true %}
+
+                {{ stage('Resume Task') }}
+
+                ALTER TASK 
+                {% if config.taskCustomName != '' %}
+                    {{ ref_no_link(node.location.name, config.taskCustomName) }}
+                {% else %}
+                    {{ ref_no_link(node.location.name, "TSK_" + node.name) }}
+                {% endif %}
+                RESUME
+
+            {% else %}
+
+                {{ stage('Insert From Stream') }}
+
+                INSERT INTO {{ ref_no_link(node.location.name, node.name) }}
+
+                {% for source in sources %}
+                
+                    SELECT
+                    {% for col in source.columns %}
+                        {% if col.name == 'CDC_ID' %}
+                            {{ ref_no_link(node.location.name, "SEQ_" + node.name) }}.NEXTVAL
+                        {% else %}
+                            {{ get_source_transform(col) }}
+                        {% endif %} AS "{{ col.name }}"
+                        {%- if not loop.last -%}, {% endif %}
+                    {% endfor %}
+
+                    FROM {{ ref_no_link(node.location.name, "STR_" + node.name) }} AS "{{ sources[0].dependencies[0].node.name }}"
+
+                    {% if config.insertStrategy in ['UNION', 'UNION ALL'] and not loop.last %}
+                        {{config.insertStrategy}}
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+    name: CDC Table
     version: 1
   StepType-Dimension:
     id: Dimension
