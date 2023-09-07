@@ -12,7 +12,16 @@ steps:
       locationName: MASTER_DATA_CLEAN
       materializationType: table
       metadata:
-        appliedNodeTests: []
+        appliedNodeTests:
+          - continueOnFailure: true
+            description: ""
+            name: Unique Test on CUST_SITE_SERV_SOURCE
+            runOrder: After
+            templateString: |-
+              select CUST_SITE_SERVICE_SOURCE, count(*)
+              from lrs_development.master_data_clean.CUSTOMER_SITE_SERVICE_MASTER
+              group by CUST_SITE_SERVICE_SOURCE
+              having count(*)>1
         columns:
           - acceptedValues:
               strictMatch: true

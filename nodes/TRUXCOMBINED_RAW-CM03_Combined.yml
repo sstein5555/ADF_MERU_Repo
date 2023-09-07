@@ -1003,13 +1003,17 @@ steps:
         cteString: ""
         enabledColumnTestIDs: []
         sourceMapping:
-          - customSQL:
+          - aliases:
+              CM03: 0428b44a-59b6-458f-a138-924ca6d6a19a
+            customSQL:
               customSQL: ""
             dependencies:
               - locationName: TRUX_V9_COMP_RAW
                 nodeName: CM03
             join:
-              joinCondition: FROM {{ ref('TRUX_V9_COMP_RAW', 'CM03') }} "CM03"
+              joinCondition: |-
+                FROM {{ ref('TRUX_V9_COMP_RAW', 'CM03') }} "CM03"
+                where "CM03_NAME" IS NOT NULL
             name: CM03_Combined
             noLinkRefs: []
       name: CM03_Combined

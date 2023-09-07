@@ -12,7 +12,16 @@ steps:
       locationName: MASTER_DATA_CLEAN
       materializationType: table
       metadata:
-        appliedNodeTests: []
+        appliedNodeTests:
+          - continueOnFailure: true
+            description: ""
+            name: Unique Test
+            runOrder: After
+            templateString: |-
+              select "Customer_Source", count(*) 
+              from lrs_development.master_data_clean.customer_master
+              group by "Customer_Source" 
+              having count(*)>1
         columns:
           - acceptedValues:
               strictMatch: true
@@ -604,7 +613,7 @@ steps:
             description: ""
             hashColumns: []
             hashDetails: null
-            name: Invoice Not Expiration Date
+            name: Invoice Note Expiration Date
             nullable: true
             sourceColumnReferences:
               - columnReferences:
