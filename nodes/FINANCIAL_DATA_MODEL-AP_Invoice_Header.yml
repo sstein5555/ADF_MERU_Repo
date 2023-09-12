@@ -531,18 +531,108 @@ steps:
                 transform: ""
             systemColumnType: None
             transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: 3196725e-ad49-4052-b7e5-4280c3921aca
+              stepCounter: a3896406-1f4e-4cd3-b272-68a164f19bf1
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Vendor_Source
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: "0"
+                    stepCounter: "0"
+                transform: "\"APIBH_COMBINED\".\"IDVEND\"||\"APIBH_COMBINED\".\"SOURCE\""
+            systemColumnType: None
+            transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: 202ea5c6-02fe-45cd-a868-8daa379cc5fd
+              stepCounter: a3896406-1f4e-4cd3-b272-68a164f19bf1
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Invoice_Batch_Source
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: "0"
+                    stepCounter: "0"
+                transform: "\"APIBH_COMBINED\".\"IDINVC\"||'-'||\"APIBH_COMBINED\".\"CNTBTCH\"||\"APIBH_COMBINED\".\"SOURCE\""
+            systemColumnType: None
+            transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: 7d719af6-974d-4001-a5ff-eef5b1acb15b
+              stepCounter: a3896406-1f4e-4cd3-b272-68a164f19bf1
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Batch_Item_Source
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: "0"
+                    stepCounter: "0"
+                transform: "\"APIBH_COMBINED\".\"CNTBTCH\"||'-'||\"APIBH_COMBINED\".\"CNTITEM\"||\"APIBH_COMBINED\".\"SOURCE\""
+            systemColumnType: None
+            transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: 84395521-c967-4b45-82c2-29dc453d1a34
+              stepCounter: a3896406-1f4e-4cd3-b272-68a164f19bf1
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: APOBP Doc Type
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: aff06eeb-2b3a-48c1-b3d3-dcdaa659b71d
+                    stepCounter: b1a36b93-908b-46a1-90c5-38769b0a2f43
+                transform: ""
+            systemColumnType: None
+            transform: ""
         cteString: ""
         enabledColumnTestIDs: []
         sourceMapping:
           - aliases:
               APIBH_COMBINED: 1cfd027f-37d6-4424-85e9-d9bed1c967a9
+              APOBL_COMBINED: b1a36b93-908b-46a1-90c5-38769b0a2f43
             customSQL:
               customSQL: ""
             dependencies:
               - locationName: SAGE_COMBINED
                 nodeName: APIBH_COMBINED
+              - locationName: SAGE_COMBINED
+                nodeName: APOBL_COMBINED
             join:
-              joinCondition: FROM {{ ref('SAGE_COMBINED', 'APIBH_COMBINED') }} "APIBH_COMBINED"
+              joinCondition: |-
+                FROM {{ ref('SAGE_COMBINED', 'APIBH_COMBINED') }} "APIBH_COMBINED"
+                LEFT JOIN {{ ref('SAGE_COMBINED', 'APOBL_COMBINED') }} "APOBL_COMBINED"
+                ON "APIBH_COMBINED"."IDINVC" = "APOBL_COMBINED"."IDINVC"
             name: AP_Invoice_Header
             noLinkRefs: []
       name: AP_Invoice_Header

@@ -285,16 +285,45 @@ steps:
                 transform: "\"DM01_COMBINED\".\"DM01_ID\"||\"DM01_COMBINED\".\"SOURCE\""
             systemColumnType: None
             transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: b33c72dd-b126-4d05-9c2e-86eed63ed17e
+              stepCounter: 6cbdcc75-9616-48ec-95e9-b79240d9b295
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Initial Term Cust
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: d8fc5bf7-df15-42fe-8363-94cbe665d3e8
+                    stepCounter: a83e2043-c50d-4bf2-8f19-a0858a24d969
+                transform: ""
+            systemColumnType: None
+            transform: ""
         cteString: ""
         enabledColumnTestIDs: []
         sourceMapping:
-          - customSQL:
+          - aliases:
+              CUSTOMER_MASTER: a83e2043-c50d-4bf2-8f19-a0858a24d969
+              DM01_COMBINED: 4db4aca4-5fea-4718-b761-1c7aa638e0c3
+            customSQL:
               customSQL: ""
             dependencies:
+              - locationName: MASTER_DATA_CLEAN
+                nodeName: CUSTOMER_MASTER
               - locationName: TRUXCOMBINED_RAW
                 nodeName: DM01_COMBINED
             join:
-              joinCondition: FROM {{ ref('TRUXCOMBINED_RAW', 'DM01_COMBINED') }} "DM01_COMBINED"
+              joinCondition: |-
+                FROM {{ ref('TRUXCOMBINED_RAW', 'DM01_COMBINED') }} "DM01_COMBINED"
+                LEFT JOIN {{ ref('MASTER_DATA_CLEAN', 'CUSTOMER_MASTER') }} "CUSTOMER_MASTER"
+                ON "DM01_COMBINED"."DM01_CUST"||"DM01_COMBINED"."SOURCE" = "CUSTOMER_MASTER"."Customer_Source"
             name: Invoice_Amounts
             noLinkRefs: []
       name: Invoice_Amounts

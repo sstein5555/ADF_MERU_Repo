@@ -50,7 +50,7 @@ steps:
             hashDetails: null
             isBusinessKey: true
             isChangeTracking: true
-            name: CUSTOMER_NUMBER
+            name: Customer Number
             nullable: false
             sourceColumnReferences:
               - columnReferences:
@@ -65,7 +65,7 @@ steps:
             hashColumns: []
             hashDetails: null
             isChangeTracking: true
-            name: CUSTOMER_NAME
+            name: Customer Name
             nullable: true
             sourceColumnReferences:
               - columnReferences:
@@ -79,7 +79,7 @@ steps:
             description: Can Join with CD11
             hashColumns: []
             hashDetails: null
-            name: CUSTOMER_TYPE
+            name: Customer Type
             nullable: true
             sourceColumnReferences:
               - columnReferences:

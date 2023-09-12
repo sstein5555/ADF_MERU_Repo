@@ -283,7 +283,9 @@ steps:
               - locationName: TRUX_UB_COMP_RAW
                 nodeName: CDC_DM01
             join:
-              joinCondition: FROM {{ ref('TRUX_UB_COMP_RAW', 'CDC_DM01') }} "CDC_DM01"
+              joinCondition: |-
+                FROM {{ ref('TRUX_UB_COMP_RAW', 'CDC_DM01') }} "CDC_DM01"
+                where "METADATA$ACTION" = 'INSERT'
             name: DM01_CDC_COMBINED
             noLinkRefs: []
       name: DM01_CDC_COMBINED

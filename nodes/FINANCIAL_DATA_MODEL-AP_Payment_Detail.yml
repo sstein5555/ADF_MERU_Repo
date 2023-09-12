@@ -78,7 +78,7 @@ steps:
           - columnReference:
               columnCounter: bfc6b350-672a-4e90-ac0f-856a556b17bb
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
-            dataType: DATE
+            dataType: Date
             description: ""
             name: Posting Date
             nullable: false
@@ -130,7 +130,7 @@ steps:
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
             dataType: NUMBER(38,0)
             description: ""
-            name: TRANSTYPE
+            name: Document Type
             nullable: false
             sourceColumnReferences:
               - columnReferences:
@@ -178,7 +178,7 @@ steps:
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
             dataType: NUMBER(38,0)
             description: ""
-            name: TRXTYPE
+            name: Transaction Type
             nullable: true
             sourceColumnReferences:
               - columnReferences:
@@ -223,18 +223,6 @@ steps:
                     stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
                 transform: ""
           - columnReference:
-              columnCounter: 64a4f781-fa12-43cf-a2cd-0cd2b03326c9
-              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
-            dataType: NUMBER(38,0)
-            description: ""
-            name: LONGSERIAL
-            nullable: true
-            sourceColumnReferences:
-              - columnReferences:
-                  - columnCounter: 680560db-cbf1-4983-a825-28cd58645993
-                    stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
-                transform: ""
-          - columnReference:
               columnCounter: f428b45d-9bd1-4437-8f20-f2a0c9c8f650
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
             dataType: NUMBER(19,3)
@@ -246,18 +234,6 @@ steps:
                   - columnCounter: 9ad066a7-ed70-4a4e-926e-b136f6d525fd
                     stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
                 transform: ""
-          - columnReference:
-              columnCounter: 201315f9-fe37-4113-bcf9-6ce7cbc5e49a
-              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
-            dataType: DATE
-            description: ""
-            name: Check Date
-            nullable: true
-            sourceColumnReferences:
-              - columnReferences:
-                  - columnCounter: 3a151592-33e9-4eb5-bff0-c1194468bae2
-                    stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
-                transform: TO_DATE(TO_VARCHAR("APOBP_COMBINED"."DATERMIT"),'YYYYMMDD')
           - columnReference:
               columnCounter: ea056b6f-0db0-4531-987e-31a3d04174fa
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
@@ -343,30 +319,6 @@ steps:
                     stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
                 transform: ""
           - columnReference:
-              columnCounter: f593ed5b-69df-4228-b18a-0cced1f7625a
-              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
-            dataType: BOOLEAN
-            description: ""
-            name: _FIVETRAN_DELETED
-            nullable: true
-            sourceColumnReferences:
-              - columnReferences:
-                  - columnCounter: 77c515fb-805c-4795-a4ec-07b09e55735c
-                    stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
-                transform: ""
-          - columnReference:
-              columnCounter: ccdde866-3aa7-4486-8b72-62a457bee9c9
-              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
-            dataType: TIMESTAMP_TZ(9)
-            description: ""
-            name: _FIVETRAN_SYNCED
-            nullable: true
-            sourceColumnReferences:
-              - columnReferences:
-                  - columnCounter: d0285312-4e8c-45e6-be9e-4097c29ba106
-                    stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
-                transform: ""
-          - columnReference:
               columnCounter: 9cf1bd26-2f36-496e-9f0d-e2601ea8ba47
               stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
             dataType: VARCHAR
@@ -379,6 +331,48 @@ steps:
                   - columnCounter: f4368b75-833d-48de-aa04-448fc628e893
                     stepCounter: 1fd007ac-065a-4d6f-b9b7-afc4ec4da489
                 transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: ed1058b6-efcf-49fe-b445-759fbd3da275
+              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Invoice_Batch_Source
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: "0"
+                    stepCounter: "0"
+                transform: "\"APOBP_COMBINED\".\"IDINVC\"||\"APOBP_COMBINED\".\"CNTBTCH\"||\"APOBP_COMBINED\".\"SOURCE\""
+            systemColumnType: None
+            transform: ""
+          - acceptedValues:
+              strictMatch: true
+              values: []
+            appliedColumnTests: {}
+            columnReference:
+              columnCounter: 7c39046c-2e99-4301-9ba5-8d1094ba743d
+              stepCounter: 96af660a-eea8-41f8-81c6-0abcead2ac26
+            config: {}
+            dataType: VARCHAR
+            defaultValue: ""
+            description: ""
+            keyColumnType: None
+            name: Batch_Item_Source
+            nullable: true
+            sourceColumnReferences:
+              - columnReferences:
+                  - columnCounter: "0"
+                    stepCounter: "0"
+                transform: "\"APOBP_COMBINED\".\"CNTBTCH\"||'-'||\"APOBP_COMBINED\".\"CNTITEM\"||\"APOBP_COMBINED\".\"SOURCE\""
+            systemColumnType: None
+            transform: ""
         cteString: ""
         enabledColumnTestIDs: []
         sourceMapping:
